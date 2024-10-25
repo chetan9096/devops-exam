@@ -70,7 +70,6 @@ resource "aws_lambda_function" "my_lambda" {
   tags = {
     Name = "My Lambda Function"
   }
-}
 
  # environment variable for subnet ID
   environment {
