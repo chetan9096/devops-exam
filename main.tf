@@ -65,7 +65,7 @@ resource "aws_lambda_function" "my_lambda" {
   handler       = "index.handler"
   runtime       = "python3.9"
 
-  # Path to your Lambda function deployment package
+
   filename      = "lambda_function.zip"
   
   vpc_config {
