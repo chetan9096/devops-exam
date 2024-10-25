@@ -28,9 +28,23 @@ pipeline{
         stage("Invoke Lambda"){
             steps{
                 echo "Invoking your AWS Lambda"
-                sh 'aws lambda invoke --function-name MyLambdaFunction response.json'
+                script {
+                    def result = sh(
+                        script: 'aws lambda invoke --function-name MyLambdaFunction response.json --log-type Tail',
+                        returnStdout: true
+                    ).trim()
+                    echo "Lambda Invocation Result: ${result}"
+                    // Decoding LogResult
+                    def logResult = sh(
+                        script: 'jq -r ".LogResult" response.json | base64 --decode',
+                        returnStdout: true
+                    ).trim()
+                    echo "Decoded LogResult: ${logResult}"
+                }
             }
         }
     }
 }
+
+    
 
