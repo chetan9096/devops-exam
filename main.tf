@@ -56,7 +56,7 @@ resource "aws_security_group" "lambda_sg" {
 
 #lambda function
 resource "aws_lambda_function" "my_lambda" {
-  function_name = "MyLambdaFunction"
+  function_name = "chetanLambdaFunction"
   role          = data.aws_iam_role.lambda.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.9"
