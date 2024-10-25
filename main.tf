@@ -1,3 +1,4 @@
+#private subnet
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = data.aws_vpc.vpc.id
   cidr_block              = "10.0.0.0/16"
@@ -9,6 +10,7 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
+#route table
 resource "aws_route_table" "private_route_table" {
   vpc_id = data.aws_vpc.vpc.id
 
@@ -27,9 +29,10 @@ resource "aws_route_table_association" "private_route_association" {
   route_table_id = aws_route_table.private_route_table.id
 }
 
+#security group
 resource "aws_security_group" "lambda_sg" {
   name        = "lambda_sg"
-  description = "Security Group for Lambda inside VPC"
+  description = "Security Group for Lambda in VPC"
   vpc_id      = data.aws_vpc.vpc.id
 
   ingress {
@@ -40,9 +43,9 @@ resource "aws_security_group" "lambda_sg" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -51,13 +54,12 @@ resource "aws_security_group" "lambda_sg" {
   }
 }
 
+#lambda function
 resource "aws_lambda_function" "my_lambda" {
   function_name = "MyLambdaFunction"
   role          = data.aws_iam_role.lambda.arn
-  handler       = "index.handler"
+  handler       = "lambda_function.lambda_handler"
   runtime       = "python3.9"
-
-
   filename      = "lambda_function.zip"
   
   vpc_config {
@@ -67,5 +69,13 @@ resource "aws_lambda_function" "my_lambda" {
 
   tags = {
     Name = "My Lambda Function"
+  }
+}
+
+ # environment variable for subnet ID
+  environment {
+    variables = {
+      SUBNET_ID = aws_subnet.private_subnet.id
+    }
   }
 }
