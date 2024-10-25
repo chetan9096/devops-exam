@@ -30,7 +30,7 @@ pipeline{
                 echo "Invoking your AWS Lambda"
                 script {
                     def result = sh(
-                        script: 'aws lambda invoke --function-name MyLambdaFunction response.json --log-type Tail',
+                        script: 'aws lambda invoke --function-name chetanLambdaFunction response.json --log-type Tail',
                         returnStdout: true
                     ).trim()
                     echo "Lambda Invocation Result: ${result}"
