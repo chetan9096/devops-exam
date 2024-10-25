@@ -1,11 +1,3 @@
-terraform {
-  backend "s3" {
-    bucket         = "467.devops.candidate.exam"
-    region         = "ap-south-1"
-    key            = "chetan.badgujar"
-  }
-}
-
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = data.aws_vpc.vpc.id
   cidr_block              = "10.0.0.0/16"
