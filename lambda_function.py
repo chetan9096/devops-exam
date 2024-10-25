@@ -1,21 +1,42 @@
+import os
 import json
 import requests
-import os
 
 def lambda_handler(event, context):
-    payload = {
-        "subnet_id": os.environ['SUBNET_ID'],
-        "name": "chetan badgujar",
-        "email": "badgujarchetan80@gmail.com"
-    }
-
-    url = "https://bc1yy8dzsg.execute-api.eu-west-1.amazonaws.com/v1/data"
-    headers = {'X-Siemens-Auth': 'test'}
-
-    response = requests.post(url, headers=headers, json=payload)
+    try:
+        if 'SUBNET_ID' not in os.environ:
+            raise ValueError("Environment variable 'SUBNET_ID' is not set.")
+        
+        subnet_id = os.environ['SUBNET_ID']
+        
+        payload = {
+            "subnet_id": subnet_id,
+            "name": "<Your Full Name>",
+            "email": "<Your Email Address>"
+        }
+        
+        response = requests.post(
+            "https://bc1yy8dzsg.execute-api.eu-west-1.amazonaws.com/v1/data",
+            headers={'X-Siemens-Auth': 'test'},
+            json=payload
+        )
+        
+        response.raise_for_status()  
+        return {
+            "statusCode": 200,
+            "body": json.dumps(response.json())
+        }
     
-    return {
-        'statusCode': response.status_code,
-        'body': response.json()
-    }
-
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {str(e)}")
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": "Request failed", "details": str(e)})
+        }
+    
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": "An unexpected error occurred", "details": str(e)})
+        }
