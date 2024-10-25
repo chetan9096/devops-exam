@@ -9,19 +9,26 @@ def lambda_handler(event, context):
         
         subnet_id = os.environ['SUBNET_ID']
         
+        print(f"Subnet ID: {subnet_id}")  
+        
         payload = {
             "subnet_id": subnet_id,
             "name": "<Your Full Name>",
             "email": "<Your Email Address>"
         }
         
+        print(f"Payload: {json.dumps(payload)}")
+
         response = requests.post(
             "https://bc1yy8dzsg.execute-api.eu-west-1.amazonaws.com/v1/data",
             headers={'X-Siemens-Auth': 'test'},
             json=payload
         )
         
+        print(f"Response: {response.text}")  
+        
         response.raise_for_status()  
+
         return {
             "statusCode": 200,
             "body": json.dumps(response.json())
